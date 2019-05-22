@@ -1,9 +1,11 @@
 
 import requests
 import difflib
+import time
 from lxml import html
 from bs4 import BeautifulSoup
 from notify_run import Notify
+
 
 USERNAME = "USERNAME"
 PASSWORD = "PASSWORD"
@@ -47,7 +49,7 @@ def main():
     soup = BeautifulSoup(result.content, 'html.parser')
 
     #print(soup.prettify())
-    print()
+    #print()
     pair = True
 
     lines1 = []
@@ -56,14 +58,14 @@ def main():
     lines2 = f_notes.readlines()
 
   
-    print("len lines 2 = " + str(len(lines2)))
-    print()
-    print("lines2 = " + str(lines1))
+    #print("len lines 2 = " + str(len(lines2)))
+    #print()
+    #print("lines2 = " + str(lines1))
 
     #check for emptyness (first run)
     if len(lines2) == 0 :
-    	print("len == 0")
-    	print("lines2 = " + str(lines1))
+    	#print("len == 0")
+    	#print("lines2 = " + str(lines1))
     	for td in soup.find_all('td'):
 	    	if pair:
 	    		f_notes.write(td.contents[0] + " : ")
@@ -75,10 +77,10 @@ def main():
     for td in soup.find_all('td'):
     	if pair:
     		s += str(td.contents[0]) + " : " 
-    		print(td.contents[0] + " : ", end='')
+    		 #print(td.contents[0] + " : ", end='')
     		#lines1.append(td.contents[0])
     	else :
-    		print(td.contents[0])
+    		#print(td.contents[0])
     		s += td.contents[0] + '\n'
     		lines1.append(s)
     		s = ''
@@ -91,14 +93,14 @@ def main():
     lines = list(diff)[2:]
     added = [line[1:] for line in lines if line[0] == '+']
 	#removed = [line[1:] for line in lines if line[0] == '-']
-    print('additions:')
+    #print('additions:')
 
     if len(added) != 0 :
     	f_notes = open("notes.txt","a")
     	notify = Notify()
     	for line in added:
     		f_notes.write(str(line))
-    		print(line)
+    		#print(line)
     		notify.send(line) 
     	f_notes.close()
 
@@ -110,4 +112,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    while True :
+        main()
+        time.sleep(60)
