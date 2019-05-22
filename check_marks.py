@@ -77,9 +77,9 @@ def main():
     	notify = Notify()
     	for line in added:
     		f_notes.write(str(line))
-    		notify.send(line) 
+    		notify.send(line.split(':')[0]) 
     	f_notes.close()
-    
+
     f_notes.close()
 
 
