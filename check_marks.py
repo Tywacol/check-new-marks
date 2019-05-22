@@ -64,29 +64,18 @@ def main():
 
     added = list(set(lines1) - set(lines2))
 
-    #print('additions:')
-    print("lines1 : " +str(lines1))
-    print("lines2 : " +str(lines1))
-
-    print("added  = " + str(added))
-
     if len(added) != 0 :
         f_notes = open("notes.txt","a")
         notify = Notify()
         for line in added:
                 f_notes.write(str(line))
-                print("line = " + str(line))
                 notify.send('Note : '+line.split(':')[0]) 
         f_notes.close()
 
     f_notes.close()
 
 if __name__ == '__main__':
-    i = 1
     while True :
-        print("Iteration : " + str(i))
-        i += 1
-        print(datetime.now())
         main()
 
         time.sleep(60)
