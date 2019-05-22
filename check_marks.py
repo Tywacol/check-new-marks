@@ -1,13 +1,18 @@
 
 import requests
+import difflib
 from lxml import html
 from bs4 import BeautifulSoup
+from notify_run import Notify
 
 USERNAME = "USERNAME"
 PASSWORD = "PASSWORD"
 
 LOGIN_URL = "https://portail.polytech-lille.fr/login/"
 URL = "http://appliportal.polytech-lille.fr/mypolytech/mesNotes.php"
+
+def send_mail():
+	pass
 
 def main():
     session_requests = requests.session()
@@ -29,23 +34,79 @@ def main():
 
     # Scrape url
     result = session_requests.get(URL, headers = dict(referer = URL))
-    print(result.content)
+    #print("Result content : ")
+    #print(result.content)
     tree = html.fromstring(result.content)
-    print(tree)
+    #print("tree : ")
+    #print(tree)
     bucket_names = tree.xpath("//td")
-    print()
+    #print("bucket_names : ")
 
-    print(bucket_names)
-    print()
+    #print(bucket_names)
+    #print("soup.prettify()")
     soup = BeautifulSoup(result.content, 'html.parser')
 
-    print(soup.prettify())
+    #print(soup.prettify())
     print()
     pair = True
 
+    lines1 = []
+
+    f_notes = open("notes.txt","r+")
+    lines2 = f_notes.readlines()
+
+  
+    print("len lines 2 = " + str(len(lines2)))
+    print()
+    print("lines2 = " + str(lines1))
+
+    #check for emptyness (first run)
+    if len(lines2) == 0 :
+    	print("len == 0")
+    	print("lines2 = " + str(lines1))
+    	for td in soup.find_all('td'):
+	    	if pair:
+	    		f_notes.write(td.contents[0] + " : ")
+	    	else :
+	    		f_notes.write(td.contents[0] +'\n')
+	    	pair = not(pair)
+
+    s = ''    	
     for td in soup.find_all('td'):
-    	#if pair:
-    	print(td.contents[0])
+    	if pair:
+    		s += str(td.contents[0]) + " : " 
+    		print(td.contents[0] + " : ", end='')
+    		#lines1.append(td.contents[0])
+    	else :
+    		print(td.contents[0])
+    		s += td.contents[0] + '\n'
+    		lines1.append(s)
+    		s = ''
+    	pair = not(pair)
+
+    #could also use set intersection between lines 1 and 2 
+    # ex : value = { k : second_dict[k] for k in set(second_dict) - set(first_dict) }
+
+    diff = difflib.unified_diff(lines2, lines1, fromfile='file1', tofile='file2', lineterm='', n=0)
+    lines = list(diff)[2:]
+    added = [line[1:] for line in lines if line[0] == '+']
+	#removed = [line[1:] for line in lines if line[0] == '-']
+    print('additions:')
+
+    if len(added) != 0 :
+    	f_notes = open("notes.txt","a")
+    	notify = Notify()
+    	for line in added:
+    		f_notes.write(str(line))
+    		print(line)
+    		notify.send(line) 
+    	f_notes.close()
+
+    #print("lines1 = " + str(lines1))
+    #print("lines2 = " + str(lines2))
+
+    f_notes.close()
+
 
 
 if __name__ == '__main__':
