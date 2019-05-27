@@ -1,32 +1,19 @@
-# Drum machine
+# Check-news-marks
 
-Simple drum machine to create and export simple rythms made using the RSound sound engine John Clements <clements@racket-lang.org>
-
-![](drum_machine.gif)
-
-## Prequisite
-
-Rsound use libportaudio.so.2.0.0 on Arch based distros. You can install it by using 
-```bash
-pacman -S lib32-portaudio
-```
-You'll also need DrRacket with can be downloaded here https://download.racket-lang.org/
-
-## Installation
-
-You can clone the project with
-```bash
-git@github.com:Tywacol/drum_machine.git
-```
+This script is an afternoon project which goal is to send a notification for anyone interested when a new mark available. 
 
 ## Usage
 
-Open "main.rkt" in DrRacket and click run.
+Go to the notify-send website and register the device where you want to get the notification. It's as simple as that.
+
+## How it works
+
+The script runs on a VPS. To detect changes it logs periodically into our university website and parse the contents of the page with the python library BeautifulSoup. It check the results against an ealier version and notify for every change. The notification is implemented with notify-send : the website send a notification by the browser that is displayed on the device. 
+
+![](img/demo.jpg)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
